@@ -1,0 +1,9 @@
+# We build-depend on "postgresql", which depends on the default major version
+# dictated by postgresql-common. Use initdb from that version, pg_config might
+# point at something else.
+DBDPG_INITDB=/usr/lib/postgresql/$(/usr/share/postgresql-common/supported-versions | tail -n1)/bin/initdb
+
+# Set temporary directory for tests,
+# cf. https://bugs.debian.org/602891 and https://github.com/bucardo/dbdpg/issues/78
+# and the former testdir.patch
+DBDPG_TEMPDIR=$(mktemp -d)

@@ -1,0 +1,21 @@
+#!/usr/bin/make -f
+
+PGVERSION=$(shell /usr/share/postgresql-common/supported-versions | tail -n1)
+PG_INCLUDEDIR = $(shell pg_config --includedir)
+PG_LIBDIR = $(shell pg_config --libdir)
+
+export POSTGRES_HOME=/usr/lib/postgresql/$(PGVERSION)
+export POSTGRES_INCLUDE=$(PG_INCLUDEDIR)
+export POSTGRES_LIB=$(PG_LIBDIR)
+export DBDPG_TEMPDIR=$(shell mktemp -d)
+export LC_ALL=C
+
+export DEB_BUILD_MAINT_OPTIONS := hardening=+all
+DPKG_EXPORT_BUILDFLAGS := 1
+include /usr/share/dpkg/buildflags.mk
+
+%:
+	dh $@
+
+override_dh_auto_test:
+	USER=$(shell whoami) dh_auto_test
